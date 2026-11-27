@@ -43,7 +43,7 @@ Total committed binary weight in `uploads/`: **~8.0 MB**, stored directly in git
 
 ## Deployment model
 
-Vercel serves `deploy/` statically. There is no CI validation, no preview-deployment convention documented, and no analytics or uptime monitoring in evidence. The publish workflow (how a new bundle gets produced and lands in `deploy/`) was undocumented in the 2026-11-26 baseline; the current external regeneration and Vercel handoff is documented in [`README.md`](../README.md).
+Vercel serves `deploy/` statically. The repository now has a push-to-`main` GitHub Actions `Full Suite` with smoke validation, four deterministic policy-test shards, and post-merge evidence artifacts; it does not deploy to Vercel. There is no preview-deployment convention documented, and no analytics or uptime monitoring in evidence. The publish workflow (how a new bundle gets produced and lands in `deploy/`) was undocumented in the 2026-11-26 baseline; the current external regeneration and Vercel handoff is documented in [`README.md`](../README.md).
 
 ## Related documents
 
