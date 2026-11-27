@@ -61,7 +61,8 @@ for (const record of records) {
   if (record.test !== expectedTest || record.command !== expectedCommand) errors.push(`timing ${record.shard} does not identify its production case`);
   const started = Date.parse(record.startedAt);
   const ended = Date.parse(record.endedAt);
-  if (!Number.isFinite(started) || !Number.isFinite(ended) || ended < started || !Number.isFinite(record.durationMs) || record.durationMs < 0) errors.push(`invalid timing for shard ${record.shard}`);
+  const elapsedMs = ended - started;
+  if (!Number.isFinite(started) || !Number.isFinite(ended) || ended < started || !Number.isFinite(record.durationMs) || record.durationMs < 0 || record.durationMs !== elapsedMs) errors.push(`invalid timing for shard ${record.shard}`);
 }
 if (upstream.smoke !== 'success' || upstream.matrix !== 'success') errors.push('upstream smoke and matrix jobs must succeed');
 const expected = ['test-timings-shard-1', 'test-timings-shard-2', 'test-timings-shard-3', 'test-timings-shard-4', 'post-merge-full-suite-evidence'];

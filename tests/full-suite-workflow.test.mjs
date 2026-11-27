@@ -97,6 +97,11 @@ test('valid timings produce evidence and invalid upstream fails with diagnostics
     fs.writeFileSync(path.join(dir, timingFiles[0]), JSON.stringify(mismatch));
   });
   rejectMutation(() => {
+    const inconsistentDuration = JSON.parse(originals[0]);
+    inconsistentDuration.durationMs += 1;
+    fs.writeFileSync(path.join(dir, timingFiles[0]), JSON.stringify(inconsistentDuration));
+  });
+  rejectMutation(() => {
     const failed = JSON.parse(originals[0]);
     failed.outcome = 'failed';
     failed.exitCode = 1;
