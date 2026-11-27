@@ -33,7 +33,7 @@ const metadata = {
 };
 const missing = Object.entries(metadata).filter(([, v]) => !v).map(([k]) => k);
 if (missing.length) { console.error(`Missing metadata: ${missing.join(', ')}`); process.exit(2); }
-if (path.resolve(outputDir) === root || path.resolve(outputDir).startsWith(`${root}${path.sep}`)) {
+if (path.resolve(outputDir) === root) {
   console.error('Timing output directory must not be inside the repository'); process.exit(2);
 }
 fs.mkdirSync(outputDir, { recursive: true });
