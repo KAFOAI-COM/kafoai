@@ -60,6 +60,12 @@ python3 -m http.server 8000 --directory deploy
 
 Local serving is a supplemental visual check, not an automated acceptance test. Before handing off a release, also confirm that `git diff --exit-code -- deploy/index.html support.js` succeeds and that neither protected generated file was changed accidentally.
 
+## Full Suite CI
+
+Every push to `main` runs the GitHub Actions workflow named **Full Suite**. It has a `Pipeline smoke` job, four non-cancelling jobs named `Test shard 1/4` through `Test shard 4/4`, and a final `Post-merge full-suite evidence` job. The shards execute the four real repository-policy cases and retain `test-timings-shard-1` through `test-timings-shard-4`; the final job retains `post-merge-full-suite-evidence`, a manifest proving the push SHA, run identity, upstream results, and timings match.
+
+The final job runs after failures so diagnostics are uploaded, but the workflow fails unless smoke, every shard, and evidence validation succeed. To inspect a run, use `gh run list --workflow Full Suite` and `gh run view RUN_ID`; download its five artifacts with `gh run download RUN_ID`. This is repository validation only: it does not deploy to Vercel.
+
 ## License
 
 This is proprietary pre-launch material owned by Raya Software Limited. It is confidential and all rights reserved; no public-use or open-source permission is granted. See [`LICENSE`](LICENSE) for the repository's explicit use restrictions.
