@@ -2,7 +2,7 @@
 
 _Produced by task KAFO-001 (study + enhancement plan). Analysis date: 2026-11-26._
 
-This repository holds the **Kafo AI marketing-site project** in its current pre-production form: a single pre-bundled static web page deployed to Vercel, a design-mockup document, the generated runtime that renders that document, and two uploaded business/design assets. There is **no website source code, no build tooling, no tests, and no README** in the repository. Git history is 3 commits (initial import, a legal-entity footer update naming Raya Software Limited, Dublin, Ireland, and its merge).
+This repository holds the **Kafo AI marketing-site project** in its current pre-production form: a single pre-bundled static web page deployed to Vercel, a design-mockup document, the generated runtime that renders that document, and two uploaded business/design assets. As of the 2026-11-26 analysis baseline, there was **no website source code, no build tooling, no tests, and no README**; the current contributor workflow is documented in [`README.md`](../README.md), with a dependency-free hygiene suite under `tests/`. Git history is 3 commits (initial import, a legal-entity footer update naming Raya Software Limited, Dublin, Ireland, and its merge).
 
 ## Repository inventory
 
@@ -32,7 +32,7 @@ Total committed binary weight in `uploads/`: **~8.0 MB**, stored directly in git
 - **(c) JavaScript is mandatory.** The unpack-on-load design renders nothing without JS (blank page + `<noscript>` notice) and shows a visible "Unpacking..." state even with JS. No pre-rendered content exists for crawlers, link unfurlers, or slow devices.
 - **(d) No source of truth in this repo.** The only representation of the website is the opaque 726 KB bundle. Content changes are neither reviewable nor diffable; the bundler pipeline lives outside the repo and is undocumented.
 - **(e) ~8 MB of binaries committed to git.** `uploads/` holds a 6.7 MB PDF and a 1.6 MB screenshot directly in history; every clone pays this cost forever.
-- **(f) Zero project hygiene.** No README, LICENSE, `.gitignore`, package.json, CI, tests, or lint configuration exist anywhere in the repo.
+- **(f) Zero project hygiene at the 2026-11-26 baseline.** That dated analysis found no README, LICENSE, `.gitignore`, package.json, CI, tests, or lint configuration. The additive hygiene files and current verification workflow are now described in [`README.md`](../README.md); no package-based build, lint, or CI tooling has been introduced.
 - **(g) Mockup-to-production status.** Grepping `deploy/index.html` for `lasttable` finds **29 mentions** — the LastTable content (EN and AR, `dir="rtl"` and `lang="ar"` attributes present) **is** in the deployed bundle. The gap is not missing content but missing **structure**: everything lives in one bundled page instead of real routes (`/en/…`, `/ar/…`). Notably, the canonical/hreflang/sitemap markup visible inside the bundle is **displayed sample code within an SEO-plan mockup section**, not actual `<head>` tags — the real document head has no meta description, Open Graph/Twitter tags, favicon, canonical link, or hreflang alternates.
 - **(h) External network dependencies.** The mockup document loads fonts from `fonts.googleapis.com`; the deployed bundle embeds its 30 woff2 fonts inline instead (self-contained but heavy).
 
@@ -43,7 +43,7 @@ Total committed binary weight in `uploads/`: **~8.0 MB**, stored directly in git
 
 ## Deployment model
 
-Vercel serves `deploy/` statically. There is no CI validation, no preview-deployment convention documented, and no analytics or uptime monitoring in evidence. The publish workflow (how a new bundle gets produced and lands in `deploy/`) is undocumented.
+Vercel serves `deploy/` statically. There is no CI validation, no preview-deployment convention documented, and no analytics or uptime monitoring in evidence. The publish workflow (how a new bundle gets produced and lands in `deploy/`) was undocumented in the 2026-11-26 baseline; the current external regeneration and Vercel handoff is documented in [`README.md`](../README.md).
 
 ## Related documents
 
