@@ -10,7 +10,11 @@ const shardScript = new URL('../.github/scripts/run-test-shard.mjs', import.meta
 const evidenceScript = new URL('../.github/scripts/create-post-merge-evidence.mjs', import.meta.url);
 const workflow = fs.readFileSync(new URL('../.github/workflows/full-suite.yml', import.meta.url), 'utf8');
 const metadata = { KAFO_REPOSITORY: 'KAFOAI-COM/kafoai', KAFO_EVENT: 'push', KAFO_REF: 'refs/heads/main', KAFO_RUN_ID: '42', KAFO_RUN_ATTEMPT: '1', KAFO_SHA: 'abc123' };
-const run = (file, args, env = {}) => spawnSync(process.execPath, [file, ...args], { cwd: root, encoding: 'utf8', env: { ...process.env, ...env } });
+const run = (file, args, env = {}) => {
+  const childEnv = { ...process.env, ...env };
+  for (const [key, value] of Object.entries(env)) if (value === null) delete childEnv[key];
+  return spawnSync(process.execPath, [file, ...args], { cwd: root, encoding: 'utf8', env: childEnv });
+};
 
 test('workflow contract is push-only, least privilege, and retains all evidence', () => {
   for (const phrase of ['name: Full Suite', 'branches: [main]', 'name: Pipeline smoke', 'name: Test shard ${{ matrix.shard }}/4', 'fail-fast: false', 'name: Post-merge full-suite evidence', 'if: always()', 'contents: read', 'test-timings-shard-${{ matrix.shard }}', 'post-merge-full-suite-evidence', 'ref: ${{ github.sha }}']) assert.ok(workflow.includes(phrase), `workflow is missing ${phrase}`);
@@ -31,7 +35,7 @@ test('each shard reaches its production case and writes timing evidence', () => 
 test('invalid shard and missing metadata are rejected', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kafo-invalid-'));
   assert.notEqual(run(shardScript.pathname, ['5', '--output-dir', dir], metadata).status, 0);
-  assert.notEqual(run(shardScript.pathname, ['1', '--output-dir', dir], { KAFO_EVENT: 'push' }).status, 0);
+  assert.notEqual(run(shardScript.pathname, ['1', '--output-dir', dir], { KAFO_REPOSITORY: null, KAFO_EVENT: null, KAFO_REF: null, KAFO_RUN_ID: null, KAFO_RUN_ATTEMPT: null, KAFO_SHA: null, GITHUB_REPOSITORY: null, GITHUB_EVENT_NAME: null, GITHUB_REF: null, GITHUB_RUN_ID: null, GITHUB_RUN_ATTEMPT: null, GITHUB_SHA: null }).status, 0);
 });
 
 test('failed production case still writes failed timing', () => {
