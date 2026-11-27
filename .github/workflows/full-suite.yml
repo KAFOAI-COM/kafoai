@@ -34,7 +34,6 @@ jobs:
 
   shard:
     name: Test shard ${{ matrix.shard }}/4
-    needs: smoke
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -74,6 +73,7 @@ jobs:
         with:
           node-version: 22
       - name: Download timing artifacts
+        continue-on-error: true
         uses: actions/download-artifact@v4 # v4.3.0
         with:
           pattern: test-timings-shard-*

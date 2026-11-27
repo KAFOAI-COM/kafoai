@@ -15,11 +15,11 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const env = process.env;
 const value = (name, fallbackName) => env[name] || (fallbackName && env[fallbackName]);
 const args = process.argv.slice(2);
-const shardArg = args.find((arg) => /^\d+$/.test(arg));
 const outputIndex = args.indexOf('--output-dir');
 const outputDir = outputIndex >= 0 ? args[outputIndex + 1] : (env.KAFO_TIMING_DIR || env.TIMING_OUTPUT_DIR);
-const shard = Number(shardArg);
-if (!Number.isInteger(shard) || shard < 1 || shard > total || !outputDir) {
+const positional = args.filter((arg, index) => outputIndex < 0 || (index !== outputIndex && index !== outputIndex + 1));
+const shard = positional.length === 1 && /^\d+$/.test(positional[0]) ? Number(positional[0]) : Number.NaN;
+if (!Number.isInteger(shard) || shard < 1 || shard > total || !outputDir || (outputIndex >= 0 && outputIndex !== 1)) {
   console.error('Usage: run-test-shard.mjs <1-4> --output-dir <directory>; required GitHub metadata must be set');
   process.exit(2);
 }
